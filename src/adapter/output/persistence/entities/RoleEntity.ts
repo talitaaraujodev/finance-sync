@@ -5,7 +5,7 @@ export type RoleDocument = RoleSchema & Document;
 
 @Schema()
 export class RoleSchema {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   name: string;
 
   @Prop({ required: true })
