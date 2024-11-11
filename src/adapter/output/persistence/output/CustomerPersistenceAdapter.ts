@@ -4,30 +4,30 @@ import { Model } from 'mongoose';
 import { CustomerPersistence } from 'src/application/output/CustomerPersistenceOutputPort';
 import {
   CustomerSchema,
-  CustomerDocument,
+  CustomerDocument as Customer,
 } from '../../persistence/entities/CustomerEntity';
 
 @Injectable()
 export class CustomerPersistenceAdapter implements CustomerPersistence {
   constructor(
     @InjectModel(CustomerSchema.name)
-    private customerRepository: Model<CustomerDocument>,
+    private customerRepository: Model<Customer>,
   ) {}
 
-  async create(customer: CustomerSchema): Promise<CustomerSchema> {
+  async create(customer: Customer): Promise<Customer> {
     const createdCustomer = new this.customerRepository(customer);
     return await createdCustomer.save();
   }
 
-  async update(id: string, customer: CustomerSchema): Promise<void> {
+  async update(id: string, customer: Customer): Promise<void> {
     await this.customerRepository.findByIdAndUpdate(id, customer);
   }
 
-  async findAll(): Promise<CustomerSchema[]> {
+  async findAll(): Promise<Customer[]> {
     return await this.customerRepository.find().exec();
   }
 
-  async findOne(id: string): Promise<CustomerSchema> {
+  async findOne(id: string): Promise<Customer> {
     return await this.customerRepository.findById(id).exec();
   }
 

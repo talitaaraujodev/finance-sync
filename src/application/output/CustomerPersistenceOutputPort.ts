@@ -1,4 +1,4 @@
-import { CustomerSchema as Customer } from '../../adapter/output/persistence/entities/CustomerEntity';
+import { CustomerDocument as Customer } from '../../adapter/output/persistence/entities/CustomerEntity';
 
 export interface CustomerPersistence {
   create(customer: Customer): Promise<Customer>;

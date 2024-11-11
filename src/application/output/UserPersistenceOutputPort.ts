@@ -1,4 +1,4 @@
-import { UserSchema as User } from '../../adapter/output/persistence/entities/UserEntity';
+import { UserDocument as User } from '../../adapter/output/persistence/entities/UserEntity';
 
 export interface UserPersistence {
   create(user: User): Promise<User>;

@@ -1,4 +1,4 @@
-import { RoleSchema as Role } from '../../adapter/output/persistence/entities/RoleEntity';
+import { RoleDocument as Role } from '../../adapter/output/persistence/entities/RoleEntity';
 
 export interface RolePersistence {
   create(role: Role): Promise<Role>;

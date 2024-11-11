@@ -1,4 +1,4 @@
-import { ReceivableSchema as Receivable } from '../../adapter/output/persistence/entities/ReceivableEntity';
+import { ReceivableDocument as Receivable } from '../../adapter/output/persistence/entities/ReceivableEntity';
 
 export interface ReceivablePersistence {
   create(receivable: Receivable): Promise<Receivable>;

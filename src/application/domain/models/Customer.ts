@@ -1,4 +1,4 @@
-import { Address } from '../aggregates/Adress';
+import { Address } from '../aggregates/Address';
 
 export class Customer {
   private _id: string | undefined;
