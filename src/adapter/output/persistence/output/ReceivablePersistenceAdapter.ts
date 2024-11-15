@@ -2,21 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ReceivablePersistence } from 'src/application/output/ReceivablePersistenceOutputPort';
-import {
-  ReceivableSchema,
-  ReceivableDocument as Receivable,
-} from '../../persistence/entities/ReceivableEntity';
+import { Receivable } from 'src/application/domain/models/Receivable';
+import { ReceivableEntity } from '../entities/ReceivableEntity';
 
 @Injectable()
 export class ReceivablePersistenceAdapter implements ReceivablePersistence {
   constructor(
-    @InjectModel(ReceivableSchema.name)
-    private receivableRepository: Model<Receivable>,
+    @InjectModel(ReceivableEntity.name)
+    private receivableRepository: Model<ReceivableEntity>,
   ) {}
 
   async create(receivable: Receivable): Promise<Receivable> {
-    const createdReceivable = new this.receivableRepository(receivable);
-    return await createdReceivable.save();
+    const createdCustomer = new this.receivableRepository(receivable);
+    const savedCustomer = await createdCustomer.save();
+    return new Receivable(
+      savedCustomer.value,
+      savedCustomer.assignor.toString(),
+      savedCustomer.emissionDate,
+      savedCustomer._id.toString(),
+    );
   }
 
   async update(id: string, receivable: Receivable): Promise<void> {
@@ -24,11 +28,27 @@ export class ReceivablePersistenceAdapter implements ReceivablePersistence {
   }
 
   async findAll(): Promise<Receivable[]> {
-    return await this.receivableRepository.find().exec();
+    const receivableDocuments = await this.receivableRepository.find();
+    return receivableDocuments.map((doc) => {
+      return new Receivable(
+        doc.value,
+        doc.assignor.toString(),
+        doc.emissionDate,
+        doc._id.toString(),
+      );
+    });
   }
 
   async findOne(id: string): Promise<Receivable> {
-    return await this.receivableRepository.findById(id).exec();
+    const receivableDocument = await this.receivableRepository.findById(id);
+    if (!receivableDocument) return null;
+
+    return new Receivable(
+      receivableDocument.value,
+      receivableDocument.assignor.toString(),
+      receivableDocument.emissionDate,
+      receivableDocument._id.toString(),
+    );
   }
 
   async delete(id: string): Promise<void> {

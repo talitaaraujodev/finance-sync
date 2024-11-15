@@ -2,31 +2,37 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { RolePersistence } from 'src/application/output/RolePersistenceOutputPort';
-import {
-  RoleSchema,
-  RoleDocument as Role,
-} from '../../persistence/entities/RoleEntity';
+import { Role } from 'src/application/domain/aggregates/Role';
+import { RoleEntity } from '../entities/RoleEntity';
 
 @Injectable()
 export class RolePersistenceAdapter implements RolePersistence {
   constructor(
-    @InjectModel(RoleSchema.name)
-    private roleRepository: Model<Role>,
+    @InjectModel(RoleEntity.name)
+    private roleRepository: Model<RoleEntity>,
   ) {}
 
   async create(role: Role): Promise<Role> {
     const createdRole = new this.roleRepository(role);
-    return await createdRole.save();
+    const savedRole = await createdRole.save();
+    return new Role(savedRole.name, savedRole._id.toString());
   }
 
   async findAll(): Promise<Role[]> {
-    return await this.roleRepository.find().exec();
+    const roleDocuments = await this.roleRepository.find();
+    return roleDocuments.map((doc) => {
+      return new Role(doc.name, doc._id.toString());
+    });
   }
 
   async findOne(id: string): Promise<Role> {
-    return await this.roleRepository.findById(id).exec();
+    const roleDocument = await this.roleRepository.findById(id);
+    if (!roleDocument) return null;
+    return new Role(roleDocument.name, roleDocument._id.toString());
   }
   async findByName(name: string): Promise<Role> {
-    return await this.roleRepository.findOne({ name: name }).exec();
+    const roleDocument = await this.roleRepository.findOne({ name });
+    if (!roleDocument) return null;
+    return new Role(roleDocument.name, roleDocument._id.toString());
   }
 }

@@ -1,15 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 
-export type RoleDocument = RoleSchema & Document;
+export type RoleDocument = HydratedDocument<RoleEntity>;
 
 @Schema()
-export class RoleSchema {
-  @Prop({ required: true, unique: true })
-  name: string;
-
+export class RoleEntity {
   @Prop({ required: true })
-  description: string;
+  name: string;
 }
 
-export const RoleEntity = SchemaFactory.createForClass(RoleSchema);
+export const RoleSchema = SchemaFactory.createForClass(RoleEntity);

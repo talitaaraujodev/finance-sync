@@ -7,9 +7,13 @@ import { AdapterModule } from './adapter/adapter.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      'mongodb://admin:12345678@localhost:27017/finance-sync',
-    ),
+    MongooseModule.forRootAsync({
+      useFactory: () => ({
+        uri: 'mongodb://admin:12345678@localhost:27017/finance-sync?authSource=admin',
+        retryWrites: true,
+        serverSelectionTimeoutMS: 5000,
+      }),
+    }),
     ApplicationModule,
     AdapterModule,
   ],

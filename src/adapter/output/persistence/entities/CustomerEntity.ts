@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
+import { Address } from 'src/application/domain/aggregates/Address';
 
-export type CustomerDocument = CustomerSchema & Document;
+export type CustomerDocument = HydratedDocument<CustomerEntity>;
 
 @Schema()
-export class CustomerSchema {
+export class CustomerEntity {
   @Prop({ required: true })
   name: string;
 
@@ -14,11 +15,11 @@ export class CustomerSchema {
   @Prop({ required: true })
   document: string;
 
-  @Prop({ required: false })
+  @Prop()
   phone: string;
 
-  @Prop({ required: false })
-  address: object;
+  @Prop({ type: Address })
+  address: Address;
 }
 
-export const CustomerEntity = SchemaFactory.createForClass(CustomerSchema);
+export const CustomerSchema = SchemaFactory.createForClass(CustomerEntity);

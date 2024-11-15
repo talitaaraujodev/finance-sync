@@ -6,7 +6,7 @@ import { Receivable } from '../domain/models/Receivable';
 @Injectable()
 export class ReceivableService implements ReceivableServiceInputPort {
   constructor(
-    @Inject('CustomerPersistence')
+    @Inject('ReceivablePersistence')
     private readonly receivablePersistence: ReceivablePersistence,
   ) {}
   async create(receivable: Receivable): Promise<Receivable> {

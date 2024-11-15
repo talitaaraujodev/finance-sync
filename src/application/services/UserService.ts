@@ -1,38 +1,48 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { UserServiceInputPort } from '../input/UserServiceInputPort';
 import { UserPersistence } from '../output/UserPersistenceOutputPort';
 import { User } from '../domain/models/User';
 
 @Injectable()
 export class UserService implements UserServiceInputPort {
-  constructor(private readonly userPersistence: UserPersistence) {}
+  constructor(
+    @Inject('UserPersistence')
+    private readonly userPersistence: UserPersistence,
+  ) {}
 
   async create(user: User): Promise<User> {
-    // const existingUser = await this.userPersistence.findByEmail(userDto.email);
-    // if (existingUser) {
-    //   throw new Error('Usuário já existe');
-    // }
+    const existingUser = await this.userPersistence.findByEmail(user.email);
+    if (existingUser) {
+      throw new HttpException(
+        'Esse e-mail já está cadastrado no sistema',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
-    // const userCreated = new User(
-    //   user.name,
-    //   user.email,
-    //   user.password,
-    //   user.permissions,
-    // );
+    const userCreated = new User(
+      user.name,
+      user.email,
+      user.password,
+      user.roles,
+    );
 
-    // const userSaved = await this.userPersistence.create(userCreated);
-    throw new Error('Method not implemented.');
+    return await this.userPersistence.create(userCreated);
   }
-  update(id: string, user: User): Promise<void> {
-    throw new Error('Method not implemented.');
+  async findOne(id: string): Promise<User> {
+    const user = await this.userPersistence.findOne(id);
+    if (!user) {
+      throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
+    }
+    return user;
   }
-  findAll(): Promise<User[]> {
-    throw new Error('Method not implemented.');
+  async update(id: string, user: User): Promise<void> {
+    await this.findOne(id);
+    return await this.userPersistence.update(
+      id,
+      new User(user.id, user.name, user.password, user.roles),
+    );
   }
-  findOne(id: string): Promise<User> {
-    throw new Error('Method not implemented.');
-  }
-  findByEmail(email: string): Promise<User> {
-    throw new Error('Method not implemented.');
+  async findAll(): Promise<User[]> {
+    return await this.userPersistence.findAll();
   }
 }

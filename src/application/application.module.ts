@@ -1,22 +1,26 @@
 import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserSchema } from 'src/adapter/output/persistence/entities/UserEntity';
-import { CustomerSchema } from 'src/adapter/output/persistence/entities/CustomerEntity';
-import { RoleSchema } from 'src/adapter/output/persistence/entities/RoleEntity';
-import { ReceivableSchema } from 'src/adapter/output/persistence/entities/ReceivableEntity';
+import { UserEntity } from 'src/adapter/output/persistence/entities/UserEntity';
+import { CustomerEntity } from 'src/adapter/output/persistence/entities/CustomerEntity';
+import { ReceivableEntity } from 'src/adapter/output/persistence/entities/ReceivableEntity';
 import { UserPersistenceAdapter } from 'src/adapter/output/persistence/output/UserPersistenceAdapter';
 import { CustomerPersistenceAdapter } from 'src/adapter/output/persistence/output/CustomerPersistenceAdapter';
 import { ReceivablePersistenceAdapter } from 'src/adapter/output/persistence/output/ReceivablePersistenceAdapter';
 import { RolePersistenceAdapter } from 'src/adapter/output/persistence/output/RolePersistenceAdapter';
+import { RoleEntity } from 'src/adapter/output/persistence/entities/RoleEntity';
+import { UserService } from './services/UserService';
+import { AuthService } from './services/AuthService';
+import { CustomerService } from './services/CustomerService';
+import { ReceivableService } from './services/ReceivableService';
 
 @Global()
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: UserSchema.name, schema: UserSchema },
-      { name: RoleSchema.name, schema: RoleSchema },
-      { name: CustomerSchema.name, schema: CustomerSchema },
-      { name: ReceivableSchema.name, schema: ReceivableSchema },
+      { name: UserEntity.name, schema: UserEntity },
+      { name: RoleEntity.name, schema: RoleEntity },
+      { name: CustomerEntity.name, schema: CustomerEntity },
+      { name: ReceivableEntity.name, schema: ReceivableEntity },
     ]),
   ],
   providers: [
@@ -36,7 +40,16 @@ import { RolePersistenceAdapter } from 'src/adapter/output/persistence/output/Ro
       provide: 'RolePersistence',
       useClass: RolePersistenceAdapter,
     },
+    { provide: 'UserServiceInputPort', useClass: UserService },
+    { provide: 'AuthServiceInputPort', useClass: AuthService },
+    { provide: 'CustomerServiceInputPort', useClass: CustomerService },
+    { provide: 'ReceivableServiceInputPort', useClass: ReceivableService },
   ],
-  exports: [],
+  exports: [
+    { provide: 'UserServiceInputPort', useClass: UserService },
+    { provide: 'AuthServiceInputPort', useClass: AuthService },
+    { provide: 'CustomerServiceInputPort', useClass: CustomerService },
+    { provide: 'ReceivableServiceInputPort', useClass: ReceivableService },
+  ],
 })
 export class ApplicationModule {}

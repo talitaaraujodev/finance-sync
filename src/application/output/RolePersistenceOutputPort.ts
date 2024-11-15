@@ -1,4 +1,4 @@
-import { RoleDocument as Role } from '../../adapter/output/persistence/entities/RoleEntity';
+import { Role } from '../domain/aggregates/Role';
 
 export interface RolePersistence {
   create(role: Role): Promise<Role>;

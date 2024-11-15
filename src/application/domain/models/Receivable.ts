@@ -2,12 +2,12 @@ export class Receivable {
   private _id: string | undefined;
   private _value: number;
   private _assignor: string;
-  private _emissionDate: string;
+  private _emissionDate: Date | string;
 
   constructor(
     value: number,
     assignor: string,
-    emissionDate: string,
+    emissionDate: Date | string,
 
     id?: string | undefined,
   ) {
@@ -26,7 +26,7 @@ export class Receivable {
   get assignor(): string {
     return this._assignor;
   }
-  get emissionDate(): string {
+  get emissionDate(): Date | string {
     return this._emissionDate;
   }
 }
