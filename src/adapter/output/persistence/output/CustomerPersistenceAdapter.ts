@@ -15,7 +15,7 @@ export class CustomerPersistenceAdapter implements CustomerPersistence {
 
   async create(customer: Customer): Promise<Customer> {
     const createdCustomer = new this.customerRepository(customer);
-    const savedCustomer = await createdCustomer.save();
+    const savedCustomer: any = await createdCustomer.save();
     return new Customer(
       savedCustomer.name,
       savedCustomer.email,
@@ -32,7 +32,7 @@ export class CustomerPersistenceAdapter implements CustomerPersistence {
 
   async findAll(): Promise<Customer[]> {
     const customerDocuments = await this.customerRepository.find();
-    return customerDocuments.map((doc) => {
+    return customerDocuments.map((doc: any) => {
       return new Customer(
         doc.name,
         doc.email,
@@ -45,7 +45,7 @@ export class CustomerPersistenceAdapter implements CustomerPersistence {
   }
 
   async findOne(id: string): Promise<Customer> {
-    const customerDocument = await this.customerRepository.findById(id);
+    const customerDocument: any = await this.customerRepository.findById(id);
     if (!customerDocument) return null;
 
     return new Customer(
